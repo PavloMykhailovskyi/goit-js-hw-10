@@ -19,7 +19,7 @@ function onInput(evt) {
   }
 
   fetchCountries(name)
-    .then(checkCountries)
+    .then(data => checkCountries(data))
     .catch(error => {
       Notiflix.Notify.warning('Oops, there is no country with that name');
     });
@@ -34,37 +34,49 @@ function checkCountries(countries) {
   }
 
   if (countries.length > 1) {
+      countryName.innerHTML = countriesMarkUp(countries);
+      countryStats.innerHTML = "";
+  }
+
+  if (countries.length === 1) {
+      countryStats.innerHTML = countryMarkUp(...countries);
+      countryName.innerHTML = '';
+  }
+}
+
+
+function countriesMarkUp(countries) {
     return countries
-      .map(({ flags: { svg }, name }) => {
-        return countryName.innerHTML = `<li class="list-item">
+      .map(({ flags: { svg }, name: { official } }) => {
+        return `<li class="list-item">
             <p class="country">
-            <img src="${svg}" alt="${name}" class="flag" />
-            ${name}
+            <img src="${svg}" alt="${official}" class="flag" />
+            ${official}
             </p>
             </li>`;
       })
       .join('');
-  }
+}
 
-  if (countries.length === 1) {
+function countryMarkUp(country) {
     const {
       flags: { svg },
-      name,
+      name: { official },
       capital,
       population,
       languages,
     } = country;
-      return countryStats.innerHTML = `<h3><img src="${svg}" alt="${name}" />${name}</h3>
-      <ul>
+    const listOfLanguages = Object.values(languages)
+return `<h3 class="country-name"><img src="${svg}" alt="${official}" class="country-flag"/>${official}</h3>
+      <ul class="country-stats">
       <li>
-      <p>Capital: ${capital}</p>
+      <p class="stats-title">Capital: <span class="stats-value">${capital}</span></p>
       </li>
       <li>
-      <p>Population: ${population}</p>
+      <p class="stats-title">Population: <span class="stats-value">${population}</span></p>
       </li>
       <li>
-      <p>Language: ${languages}</p>
+      <p class="stats-title">Language: <span class="stats-value">${listOfLanguages.join(', ')}</span></p>
       </li>
       </ul>`;
-  }
 }
