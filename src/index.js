@@ -3,6 +3,7 @@ import { fetchCountries } from './fetchCountries';
 import debounce from 'lodash.debounce';
 import Notiflix from 'notiflix';
 
+
 const DEBOUNCE_DELAY = 300;
 
 const input = document.querySelector('#search-box');
@@ -33,41 +34,44 @@ function checkCountries(countries) {
     return;
   }
 
-  if (countries.length > 1) {
-      countryName.innerHTML = countriesMarkUp(countries);
-      countryStats.innerHTML = "";
+    if (countries.length >= 1) {
+        renderMarkUp('', countriesMarkUp(countries))
+        // return
+    //   countryName.innerHTML = countriesMarkUp(countries);
+    //   countryStats.innerHTML = "";
   }
 
-  if (countries.length === 1) {
-      countryStats.innerHTML = countryMarkUp(...countries);
-      countryName.innerHTML = '';
+    if (countries.length === 1) {
+        renderMarkUp(countryMarkUp(...countries), '')
+        // return
+    //   countryStats.innerHTML = countryMarkUp(...countries);
+    //   countryName.innerHTML = '';
   }
 }
 
-
 function countriesMarkUp(countries) {
-    return countries
-      .map(({ flags: { svg }, name: { official } }) => {
-        return `<li class="list-item">
+  return countries
+    .map(({ flags: { svg }, name: { official } }) => {
+      return `<li class="list-item">
             <p class="country">
             <img src="${svg}" alt="${official}" class="flag" />
             ${official}
             </p>
             </li>`;
-      })
-      .join('');
+    })
+    .join('');
 }
 
 function countryMarkUp(country) {
-    const {
-      flags: { svg },
-      name: { official },
-      capital,
-      population,
-      languages,
-    } = country;
-    const listOfLanguages = Object.values(languages)
-return `<h3 class="country-name"><img src="${svg}" alt="${official}" class="country-flag"/>${official}</h3>
+  const {
+    flags: { svg },
+    name: { official },
+    capital,
+    population,
+    languages,
+  } = country;
+  const listOfLanguages = Object.values(languages);
+  return `<h3 class="country-name"><img src="${svg}" alt="${official}" class="country-flag"/>${official}</h3>
       <ul class="country-stats">
       <li>
       <p class="stats-title">Capital: <span class="stats-value">${capital}</span></p>
@@ -76,7 +80,17 @@ return `<h3 class="country-name"><img src="${svg}" alt="${official}" class="coun
       <p class="stats-title">Population: <span class="stats-value">${population}</span></p>
       </li>
       <li>
-      <p class="stats-title">Language: <span class="stats-value">${listOfLanguages.join(', ')}</span></p>
+      <p class="stats-title">Language: <span class="stats-value">${listOfLanguages.join(
+        ', '
+      )}</span></p>
       </li>
       </ul>`;
 }
+
+function renderMarkUp(oneCountry, severalCountries) {
+  countryStats.innerHTML = oneCountry;
+  countryName.innerHTML = severalCountries;
+}
+
+
+
