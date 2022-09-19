@@ -3,9 +3,12 @@ export const fetchCountries = name => {
     `https://restcountries.com/v3.1/name/${name}?fields=name,capital,population,flags,languages`
   )
     .then(response => {
-      return response.json();
-    })
-    .catch(error => console.error(error));
+      if (response.status === 404) {
+        return []
+        }
+        return response.json();
+    }).catch(error => console.error(error))
+    
 };
 
 
